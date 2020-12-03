@@ -1,0 +1,24 @@
+front end:
+search box 
+enter query
+
+back end;
+
+
+
+
+
+
+<html>
+<body>
+    <p>Here is the similarity score: {{ variable }}</p>
+    <form action="{{ url_for("getSimilarity")}}" method="post"> 
+        <label for="firstname">First Name:</label> 
+        <input type="text" id="firstname" name="fname" placeholder="firstname"> 
+        <button type="submit">Login</button> 
+</body>
+</html>
+
+
+
+
