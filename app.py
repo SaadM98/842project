@@ -7,6 +7,8 @@ import math
 import json
 from numpy import inf
 from flask import Flask, request, render_template  
+from pagerank import pagerank
+from scipy import sparse
 
 app = Flask(__name__)
 
@@ -51,7 +53,7 @@ def getText(url):
     return output
 def getList():
     #main url
-    url = 'https://lite.cnn.com/en'
+    url = 'https://mobile.reuters.com'
     req = requests.get(url)
     soup = BeautifulSoup(req.content, 'html.parser')
 
@@ -59,12 +61,15 @@ def getList():
     articles = soup.find_all('a')[2:-2]
     #cacm will contain title and its url and content
     cacm = {}
+    inc = 0
     for i in range(len(articles)):
-        cacm[i] = {
-            'title': articles[i].get_text(),
-            'url': url[:-3] + articles[i].get('href'),
-            'content': getText(url[:-3] + articles[i].get('href'))
-        }
+        if(articles[i].get('href') != None and '/article/' in articles[i].get('href') and len(articles[i].get_text().strip()) !=0):
+            cacm[inc] = {
+                'title': articles[i].get_text(),
+                'url': url + articles[i].get('href'),
+                'content': getText(url + articles[i].get('href'))
+            }
+            inc+=1
     return cacm
 
 def getPosting(mainList):
@@ -171,9 +176,10 @@ def getSimilarity(mainList, posting, queryTT):
 
     q1W = np.multiply(q1, idf)
 
+
+    pg = pagerank(sparse.csr_matrix(docsW))
+    print(pg)
     #Lambda function to square
-
-
     def sq(x): return x**2
 
 
@@ -190,7 +196,7 @@ def getSimilarity(mainList, posting, queryTT):
             similarity[str(d)] = 0
         else :
             similarity[str(d)] = numerator/denominator
-    
+        similarity[str(d)] += pg[d]
         #similarity[str(d)] = numerator/denominator
 
     similarity = dict(filter(lambda elem: elem[1] > 0, similarity.items()))
