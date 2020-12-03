@@ -10,7 +10,7 @@ from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
-@app.route('/', methods =["POST"]) 
+@app.route('/', methods =["GET","POST"]) 
 def gfg(): 
     if request.method == "POST": 
        # getting input with name = fname in HTML form 
