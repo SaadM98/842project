@@ -5,12 +5,16 @@ from collections import OrderedDict
 import numpy as np
 import math
 import json
+import os
 from numpy import inf
 from flask import Flask, request, render_template  
 from pagerank import pagerank
 from scipy import sparse
 
 app = Flask(__name__)
+
+port = int(os.environ.get('PORT', 5000))
+app.run(host='0.0.0.0', port=port, debug=True)
 
 @app.route('/', methods =["GET","POST"]) 
 def gfg(): 
